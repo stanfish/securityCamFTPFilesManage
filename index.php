@@ -1,3 +1,6 @@
+<link type="text/css" rel="stylesheet" href="style.css" />
+<script type="text/javascript" src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
+
 <?php
 	//How many images to display on each page
 	$numInPage=100;
@@ -30,7 +33,7 @@
 
 
 				if ($files[count($files)-$iii-1]!='.' && $files[count($files)-$iii-1]!='..'){
-					echo "var tmpO={name:'".$files[count($files)-$iii-1]."',date:'".date ("F d Y H:i:s.", filectime($dir.$files[count($files)-$iii-1])-3*3600)."'};";
+					echo "var tmpO={name:'".$files[count($files)-$iii-1]."',date:'".date ("F d Y H:i:s.", filemtime($dir.$files[count($files)-$iii-1])-3*3600)."'};";
 					echo "allFiles.push(tmpO);";
 				}
 			}
@@ -43,113 +46,6 @@
 			
 			?>
 
-<style>
-#imageList {
-    -moz-column-count:2;
-    -webkit-column-count:2;
-    column-count:2;
-}
-
-.highlight{
-    border-style: solid;
-    border-width: 5px;
-    border-color: blue;
-}
-
-.nohighlight{
-    border-style: solid;
-    border-width: 5px;
-    border-color: white;
-}
-
-.imgDiv {
-    max-width: 48%;
-    margin: 1px;
-    display: inline-table;
-    cursor: pointer;
-}
-
-img {
-    max-width: 100%;
-}
-
-
-
-
-button {
-	display: inline-block;
-	color: #666;
-	background-color: #eee;
-	text-transform: uppercase;
-	letter-spacing: 2px;
-	font-size: 12px;
-	padding: 10px 30px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border: 1px solid rgba(0,0,0,0.3);
-	border-bottom-width: 3px;
-}
-
-	button:hover {
-		background-color: #e3e3e3;
-		border-color: rgba(0,0,0,0.5);
-	}
-	
-	button:active {
-		background-color: #CCC;
-		border-color: rgba(0,0,0,0.9);
-	}
-
-
-
-/* blue button */
-
-a.btn {
-	display: inline-block;
-	color: #666;
-	background-color: #eee;
-	text-transform: uppercase;
-	letter-spacing: 2px;
-	font-size: 12px;
-	padding: 10px 30px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border: 1px solid rgba(0,0,0,0.3);
-	border-bottom-width: 3px;
-}
-
-	a.btn:hover {
-		background-color: #e3e3e3;
-		border-color: rgba(0,0,0,0.5);
-	}
-	
-	a.btn:active {
-		background-color: #CCC;
-		border-color: rgba(0,0,0,0.9);
-	}
-
-a.btn.btn-blue {
-	background-color: #699DB6;
-	border-color: rgba(0,0,0,0.3);
-	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
-	color: #FFF;
-}
-
-	a.btn.btn-blue:hover {
-		background-color: #4F87A2;
-		border-color: rgba(0,0,0,0.5);
-	}
-	
-	a.btn.btn-blue:active {
-		background-color: #3C677B;
-		border-color: rgba(0,0,0,0.9);
-	}
-
-
-
-</style>
 
 <br /><br />
 
@@ -248,10 +144,6 @@ var List = React.createClass({
 
   submitTo:function(targetFile){
 
-  	<?php
-  	if ($getuser[0]["username"]=='admin'){
-  	?>
-
   	var selectedFiles=new Array();
 	$('.highlight').each(function(){
 		selectedFiles.push(this.id);
@@ -282,18 +174,6 @@ var List = React.createClass({
 	theForm.submit();
 
 	//console.log('submitTo '+selectedFiles);
-
-
-	<?php
-	} else {
-	?>
-
-	alert('Admin user only');
-
-
-	<?php
-	}
-	?>
 
   },
 
@@ -415,5 +295,3 @@ ReactDOM.render( < List data = {
 <br><br><br><br>
 
 
-
-<script type="text/javascript" src='http://adn.ebay.com/files/js/min/jquery-1.6.2-min.js'></script>

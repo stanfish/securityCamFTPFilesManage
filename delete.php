@@ -1,10 +1,4 @@
 <?php
-	require_once('../../lib/connections/db.php');
-	include('../../lib/functions/functions.php');
-
-	checkLogin('1');
-
-	$getuser = getUserRecords($_SESSION['user_id']);
 
 	$dir= "/home/fishcam/files/";
 
@@ -29,7 +23,7 @@
 
 
 
-	echo '<meta http-equiv="refresh" content="1; url=http://www.stanfish.com/admin/admin/scam3/index.php?start='.$start.'" />';
+	echo '<meta http-equiv="refresh" content="1; url=index.php?start='.$start.'" />';
 
 	echo '<p><a href="index.php?start='.$start.'">Back</a>';
 

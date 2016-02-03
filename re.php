@@ -1,13 +1,4 @@
 <?php
-	require_once('../../lib/connections/db.php');
-	include('../../lib/functions/functions.php');
-
-	checkLogin('1');
-
-	$getuser = getUserRecords($_SESSION['user_id']);
-
-
-	$dir = "$DOCUMENT_ROOT"."/fishcam/";
 	$numInPage=100;
 	
 	$dir= "/home/fishcam/backfiles/";
@@ -41,7 +32,7 @@
 
 			
 			sort($files);
-			for($iii=$i; $iii<$i+$numInPage&&(count($files)-$iii-1)>0;$iii++){
+			for($iii=$i-1; $iii<$i+$numInPage&&(count($files)-$iii-1)>0;$iii++){
 				if ($files[count($files)-$iii-1]!='.' && $files[count($files)-$iii-1]!='..'){
 					if ($k%2==1){
 						echo '<tr><td>';
@@ -49,7 +40,7 @@
 						echo '<td>';
 					}
 
-					echo '<img src="../../../fishcamback/'.$files[count($files)-$iii-1].'"><br>'.$files[count($files)-$iii-1].'<br>'.date ("F d Y H:i:s.", filectime($dir.$files[count($files)-$iii-1])-3*3600);
+					echo '<img src="../../../fishcamback/'.$files[count($files)-$iii-1].'"><br>'.$files[count($files)-$iii-1].'<br>'.date ("F d Y H:i:s.", filemtime($dir.$files[count($files)-$iii-1])-3*3600);
 
 //echo filectime($files[count($files)-$iii-1]);
 

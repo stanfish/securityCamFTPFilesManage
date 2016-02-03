@@ -1,10 +1,4 @@
 <?php
-	require_once('../../lib/connections/db.php');
-	include('../../lib/functions/functions.php');
-
-	checkLogin('1');
-
-	$getuser = getUserRecords($_SESSION['user_id']);
 
 	$dir= "/home/fishcam/files/";
 	$newDir= "/home/fishcam/backfiles/";
