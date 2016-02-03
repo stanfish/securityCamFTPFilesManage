@@ -1,5 +1,8 @@
 <link type="text/css" rel="stylesheet" href="style.css" />
 <script type="text/javascript" src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+<script src="https://fb.me/react-with-addons-0.14.7.js"></script>
+<script src="https://fb.me/react-dom-0.14.7.js"></script>
 
 <?php
 	//How many images to display on each page
@@ -13,6 +16,8 @@
 			$i=1;
 			$j=1;
 			$k=1;
+
+			//start is parameter that indicate which files to start displaying
 			if ($_GET['start']!=''){
 				$i=(int)$_GET['start'];
 			}
@@ -28,9 +33,10 @@
 			sort($files);
 
 			echo '<script>';
+
+			//Create an Array, allFiles, to store all image filenames
 			echo 'var allFiles=new Array();';
 			for($iii=$i; $iii<$i+$numInPage&&(count($files)-$iii-1)>0;$iii++){
-
 
 				if ($files[count($files)-$iii-1]!='.' && $files[count($files)-$iii-1]!='..'){
 					echo "var tmpO={name:'".$files[count($files)-$iii-1]."',date:'".date ("F d Y H:i:s.", filemtime($dir.$files[count($files)-$iii-1])-3*3600)."'};";
@@ -40,20 +46,30 @@
 			
 			echo '</script>';
 	
-			echo ($i<=1?'':'<a class="btn btn-blue" href="?start='.($i-$numInPage<1?1:$i-$numInPage).'">Prev</a>').'&nbsp;&nbsp;&nbsp;&nbsp;';
+			$prevButton=($i<=1?'':'<a class="btn btn-blue" href="?start='.($i-$numInPage<1?1:$i-$numInPage).'">Prev</a>');
+
+			$nextButton='<a class="btn btn-blue" href="?start='.($i+$numInPage).'">Next</a>';
+
+			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
 			
-			echo '<a class="btn btn-blue" href="?start='.($i+$numInPage).'">Next</a>';
 			
 			?>
 
 
 <br /><br />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
-<script src="https://fb.me/react-with-addons-0.14.7.js"></script>
-<script src="https://fb.me/react-dom-0.14.7.js"></script>
+
 <div id="container"></div>
 
+<br /><br />
+
+			<?php
+
+			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
+			closedir($dh);
+		}
+	}
+?>
 
 
 <script type="text/babel">	
@@ -265,7 +281,6 @@ ReactDOM.render( < List data = {
 );
 
 
-
 </script>
 
 
@@ -273,24 +288,6 @@ ReactDOM.render( < List data = {
 
 
 <div id="hidden_form_container" style="display:none;"></div>
-
-<br /><br />
-
-			<?php
-
-			echo ($i<=1?'':'<a class="btn btn-blue" href="?start='.($i-$numInPage<1?1:$i-$numInPage).'">Prev</a>').'&nbsp;&nbsp;&nbsp;&nbsp;';
-			
-			echo '<a class="btn btn-blue" href="?start='.($i+$numInPage).'">Next</a>';
-
-
-
-			closedir($dh);
-		}
-	}
-
-
-?>
-
 
 <br><br><br><br>
 
