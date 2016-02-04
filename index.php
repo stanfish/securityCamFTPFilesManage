@@ -1,18 +1,20 @@
-<link type="text/css" rel="stylesheet" href="style.css" />
-<script type="text/javascript" src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
-<script src="https://fb.me/react-with-addons-0.14.7.js"></script>
-<script src="https://fb.me/react-dom-0.14.7.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style/style.css">
+	<script type="text/javascript" src='lib/jquery-1.12.0.min.js'></script>
+	<script type="text/javascript" src="lib/browser.js"></script>
+	<script type="text/javascript" src="lib/react-with-addons-0.14.7.js"></script>
+	<script type="text/javascript" src="lib/react-dom-0.14.7.js"></script>
+
+	<script>
 
 <?php
-	//How many images to display on each page
-	$numInPage=100;
-	//Folder that contains all image files
-	$dir= "/home/fishcam/files/";
-
+	require_once('config.php');
+	
 	// Open directory, and proceed to read its contents
-	if (is_dir($dir)) {
-		if ($dh = opendir($dir)) {
+	if (is_dir($FTP_DIR)) {
+		if ($dh = opendir($FTP_DIR)) {
 			$i=1;
 			$j=1;
 			$k=1;
@@ -23,57 +25,55 @@
 			}
 
    			while ($files[] = readdir($dh));
-		    $io = popen ( '/usr/bin/du -sh ' . $dir, 'r' );
+		    $io = popen ( '/usr/bin/du -sh ' . $FTP_DIR, 'r' );
 		    $size = fgets ( $io, 4096);
 		    $size = substr ( $size, 0, strpos ( $size, "\t" ) );
 		    pclose ( $io );
 
-			echo '<center>'.$getuser[0]["username"].' - '.$size.' - '.count($files).'</center>';
-			
 			sort($files);
-
-			echo '<script>';
 
 			//Create an Array, allFiles, to store all image filenames
 			echo 'var allFiles=new Array();';
-			for($iii=$i; $iii<$i+$numInPage&&(count($files)-$iii-1)>0;$iii++){
+			for($iii=$i; $iii<$i+$NumberImagesInPage&&(count($files)-$iii-1)>0;$iii++){
 
 				if ($files[count($files)-$iii-1]!='.' && $files[count($files)-$iii-1]!='..'){
-					echo "var tmpO={name:'".$files[count($files)-$iii-1]."',date:'".date ("F d Y H:i:s.", filemtime($dir.$files[count($files)-$iii-1])-3*3600)."'};";
+					echo "var tmpO={name:'".$files[count($files)-$iii-1]."',date:'".date ("F d Y H:i:s.", filemtime($FTP_DIR.$files[count($files)-$iii-1])-3*3600)."'};";
 					echo "allFiles.push(tmpO);";
 				}
 			}
-			
-			echo '</script>';
-	
-			$prevButton=($i<=1?'':'<a class="btn btn-blue" href="?start='.($i-$numInPage<1?1:$i-$numInPage).'">Prev</a>');
+?>
+	</script>
+	</head>
 
-			$nextButton='<a class="btn btn-blue" href="?start='.($i+$numInPage).'">Next</a>';
-
-			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
-			
-			
-			?>
-
-
-<br /><br />
-
-
-<div id="container"></div>
-
-<br /><br />
-
-			<?php
-
-			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
+	<body>
+<?php
 			closedir($dh);
+	
+			echo '<center>'.$size.' - '.count($files).'</center>';
+
+			$prevButton=($i<=1?'':'<a class="btn btn-blue" href="?start='.($i-$NumberImagesInPage<1?1:$i-$NumberImagesInPage).'">Prev</a>');
+
+			$nextButton='<a class="btn btn-blue" href="?start='.($i+$NumberImagesInPage).'">Next</a>';
+
+			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
+			
+			
+?>
+
+
+<br /><br />
+<div id="container"></div>
+<br /><br />
+
+<?php
+
+			echo $prevButton.'&nbsp;&nbsp;&nbsp;&nbsp;'.$nextButton;
 		}
 	}
 ?>
 
 
 <script type="text/babel">	
-
 
 var EachImage = React.createClass({
   getInitialState: function() {
@@ -100,13 +100,9 @@ var EachImage = React.createClass({
         className: 'nohighlight'
       });
     }
-
-    //console.log('click image '+this.state.data+' '+this.state.className);
   },
 
   render: function() {
-    //console.log('image render props='+this.props.className+' state='+this.state.className);
-
     this.className = this.props.className;
     if (this.useState) {
       this.className = this.state.className;
@@ -125,7 +121,7 @@ var EachImage = React.createClass({
 		    }
     	>
 		    <img src = {
-		      '../../../fishcam/' + this.state.name
+		      '<?php echo $Image_Path;?>' + this.state.name
 		    }
 		    /> 
 		    <br />
@@ -292,3 +288,5 @@ ReactDOM.render( < List data = {
 <br><br><br><br>
 
 
+</body>
+</html>
