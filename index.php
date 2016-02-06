@@ -73,7 +73,7 @@
 ?>
 
 
-<script type="text/babel">	
+<script type="text/babel" >	
 
 var EachImage = React.createClass({
   getInitialState: function() {
@@ -157,11 +157,16 @@ var List = React.createClass({
   submitTo:function(targetFile){
 
   	var selectedFiles=new Array();
+  	var noSelectedFiles=new Array();
 	$('.highlight').each(function(){
 		selectedFiles.push(this.id);
 	});
 
-	var theForm, newInput1, newInput2;
+	$('.nohighlight').each(function(){
+		noSelectedFiles.push(this.id);
+	});	
+
+	var theForm, newInput1, newInput2, newInput3;
 	// Start by creating a <form>
 	theForm = document.createElement('form');
 	theForm.action = targetFile;
@@ -174,12 +179,18 @@ var List = React.createClass({
 
 	newInput2 = document.createElement('input');
 	newInput2.type = 'hidden';
-	newInput2.name = 'start';
-	newInput2.value = '<?php echo $_GET['start'];?>';
+	newInput2.name = 'restFileList';
+	newInput2.value = noSelectedFiles;	
+
+	newInput3 = document.createElement('input');
+	newInput3.type = 'hidden';
+	newInput3.name = 'start';
+	newInput3.value = '<?php echo $_GET['start'];?>';
 	
 	// Now put everything together...
 	theForm.appendChild(newInput1);
 	theForm.appendChild(newInput2);
+	theForm.appendChild(newInput3);
 	// ...and it to the DOM...
 	document.getElementById('hidden_form_container').appendChild(theForm);
 	// ...and submit it
