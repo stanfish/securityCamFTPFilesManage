@@ -1,3 +1,83 @@
+<?php
+
+  require_once('config.php');
+
+  $start=$_GET['start'];
+  $fileList=$_POST['fileList'];
+  $restFileList=$_POST['restFileList'];
+  $fileList = explode(",", $fileList);
+  $restFileList = explode(",", $restFileList);
+  $outputMsg='';
+
+  if ($_GET['action']=='deletePage'){
+
+    $fileList=$_POST['fileList'];
+    $restFileList=$_POST['restFileList'];
+    $fileList = explode(",", $fileList);
+    $restFileList = explode(",", $restFileList);
+
+    //Delete the non-highlighted images
+    foreach ($restFileList as $value) {
+      $path=$FTP_DIR.$value;
+      if (is_file($path))
+      {
+        if (unlink($path)) { 
+          $outputMsg.="Deleted " . $path . "<br>";
+        } else {
+          $outputMsg.="Cannoot deleted " . $path . "<br>";
+        }
+      }
+    }
+
+    //Recycle the highlighted images
+    foreach ($fileList as $value) {
+      $path=$FTP_DIR.$value;
+      $newPath=$RECYCLE_DIR.$value;
+      if (is_file($path))
+      {
+        if (rename($path, $newPath)){
+          $outputMsg.="Moved " . $path . "<br>";
+        } else {
+          $outputMsg.="Cannoot move ". $path . "<br>";
+        }
+      }
+    }
+  } else if ($_GET['action']=='delete'){
+
+    //Delete the highlighted images
+    foreach ($fileList as $value) {
+      $path=$FTP_DIR.$value;
+      if (is_file($path))
+      {
+          if (unlink($path)) { 
+            $outputMsg.="Deleted " . $path . "<br>";
+          } else {
+            $outputMsg.="Cannoot delete " . $path . "<br>";
+          }
+      }
+    }
+
+  } else if ($_GET['action']=='recycle'){
+
+    //Recycle the highlighted images
+    foreach ($fileList as $value) {
+      $path=$FTP_DIR.$value;
+      $newPath=$RECYCLE_DIR.$value;
+      if (is_file($path))
+      {
+        if (rename($path, $newPath)){
+          $outputMsg.="Moved " . $path . "<br>";
+        } else {
+          $outputMsg.="Cannot move " . $path . "<br>";
+        }
+      }
+    }
+  }
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,7 +90,7 @@
 	<script>
 
 <?php
-	require_once('config.php');
+	
 	
 	// Open directory, and proceed to read its contents
 	if (is_dir($FTP_DIR)) {
@@ -24,11 +104,11 @@
 				$i=(int)$_GET['start'];
 			}
 
-   			while ($files[] = readdir($dh));
-		    $io = popen ( '/usr/bin/du -sh ' . $FTP_DIR, 'r' );
-		    $size = fgets ( $io, 4096);
-		    $size = substr ( $size, 0, strpos ( $size, "\t" ) );
-		    pclose ( $io );
+ 			while ($files[] = readdir($dh));
+	    $io = popen ( '/usr/bin/du -sh ' . $FTP_DIR, 'r' );
+	    $size = fgets ( $io, 4096);
+	    $size = substr ( $size, 0, strpos ( $size, "\t" ) );
+	    pclose ( $io );
 
 			sort($files);
 
@@ -158,54 +238,60 @@ var List = React.createClass({
 
   	var selectedFiles=new Array();
   	var noSelectedFiles=new Array();
-	$('.highlight').each(function(){
-		selectedFiles.push(this.id);
-	});
+  	$('.highlight').each(function(){
+  		selectedFiles.push(this.id);
+  	});
 
-	$('.nohighlight').each(function(){
-		noSelectedFiles.push(this.id);
-	});	
+  	$('.nohighlight').each(function(){
+  		noSelectedFiles.push(this.id);
+  	});	
 
-	var theForm, newInput1, newInput2, newInput3;
-	// Start by creating a <form>
-	theForm = document.createElement('form');
-	theForm.action = targetFile;
-	theForm.method = 'post';
-	// Next create the <input>s in the form and give them names and values
-	newInput1 = document.createElement('input');
-	newInput1.type = 'hidden';
-	newInput1.name = 'fileList';
-	newInput1.value = selectedFiles;
+  	var theForm, newInput1, newInput2, newInput3;
+  	// Start by creating a <form>
+  	theForm = document.createElement('form');
+  	theForm.action = targetFile;
+  	theForm.method = 'post';
+  	// Next create the <input>s in the form and give them names and values
+  	newInput1 = document.createElement('input');
+  	newInput1.type = 'hidden';
+  	newInput1.name = 'fileList';
+  	newInput1.value = selectedFiles;
 
-	newInput2 = document.createElement('input');
-	newInput2.type = 'hidden';
-	newInput2.name = 'restFileList';
-	newInput2.value = noSelectedFiles;	
+  	newInput2 = document.createElement('input');
+  	newInput2.type = 'hidden';
+  	newInput2.name = 'restFileList';
+  	newInput2.value = noSelectedFiles;	
 
-	newInput3 = document.createElement('input');
-	newInput3.type = 'hidden';
-	newInput3.name = 'start';
-	newInput3.value = '<?php echo $_GET['start'];?>';
-	
-	// Now put everything together...
-	theForm.appendChild(newInput1);
-	theForm.appendChild(newInput2);
-	theForm.appendChild(newInput3);
-	// ...and it to the DOM...
-	document.getElementById('hidden_form_container').appendChild(theForm);
-	// ...and submit it
-	theForm.submit();
+  	newInput3 = document.createElement('input');
+  	newInput3.type = 'hidden';
+  	newInput3.name = 'start';
+  	newInput3.value = '<?php echo $_GET['start'];?>';
+  	
+  	// Now put everything together...
+  	theForm.appendChild(newInput1);
+  	theForm.appendChild(newInput2);
+  	theForm.appendChild(newInput3);
+  	// ...and it to the DOM...
+  	document.getElementById('hidden_form_container').appendChild(theForm);
+  	// ...and submit it
+  	theForm.submit();
 
-	//console.log('submitTo '+selectedFiles);
+  	//console.log('submitTo '+selectedFiles);
 
   },
 
   deleteButtonClick: function (){
-  	this.submitTo('delete.php');
+  	//this.submitTo('delete.php');
+    this.submitTo('index.php?action=delete&start=<?php echo $_GET['start'];?>');
   },
 
   moveToBinButtonClick: function (){
-  	this.submitTo('recycle.php');
+  	//this.submitTo('recycle.php');
+    this.submitTo('index.php?action=recycle&start=<?php echo $_GET['start'];?>');
+  },
+
+  deletePageExceptHighlight: function(){
+    this.submitTo('index.php?action=deletePage&start=<?php echo $_GET['start'];?>');
   },
 
   render: function() {
@@ -248,6 +334,12 @@ var List = React.createClass({
         this.moveToBinButtonClick
       } > Move to Recycle Bin < /button>
 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+      < button onClick = {
+        this.deletePageExceptHighlight
+      } > Delete Page Except Highlight < /button>
+
       <p / >
       < span id = "imageList" > {
         listItems
@@ -273,6 +365,11 @@ var List = React.createClass({
       < button onClick = {
         this.moveToBinButtonClick
       } > Move to Recycle Bin < /button>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+      < button onClick = {
+        this.deletePageExceptHighlight
+      } > Delete Page Except Highlight < /button>
 
       < /span>
     );
@@ -297,6 +394,10 @@ ReactDOM.render( < List data = {
 <div id="hidden_form_container" style="display:none;"></div>
 
 <br><br><br><br>
+
+<?php 
+  echo $outputMsg;
+?>
 
 
 </body>
