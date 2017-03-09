@@ -1,5 +1,6 @@
 <?php
 
+
   require_once('config.php');
 
   $start=$_GET['start'];
@@ -8,6 +9,7 @@
   $fileList = explode(",", $fileList);
   $restFileList = explode(",", $restFileList);
   $outputMsg='';
+
 
   if ($_GET['action']=='deletePage'){
 
